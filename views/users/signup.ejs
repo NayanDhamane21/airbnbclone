@@ -1,45 +1,125 @@
 <% layout("layouts/boilerplate") -%>
-<div class="row mt-3">
-    <div class="col-6 offset-3">
-        <form method="POST" action="/signup" novalidate class="needs-validation">
-             <div class="mb-3">
-                <label for="username" class="form-label">username</label>
-               <input
-               name="username"
-               id="username"
-               placeholder="username"
-               type="text"
-               class="form-control"
-               required
-               />
-             <div class="invalid-feedback">invalid username</div>
-             </div>
-             <div class="mb-3">
-                <label for="email" class="form-label">email</label>
-               <input
-               name="email"
-               id="email"
-               placeholder="email"
-               type="text"
-               class="form-control"
-               required
-               />
-            
-             </div>
-             <div class="mb-3">
-                <label for="password" class="form-label">password</label>
-               <input
-               name="password"
-               id="password"
-              
-               type="text"
-               class="form-control"
-               required
-               />
-             
-             </div>
-             <button class="btn btn-success">signup</button>
 
-        </form>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+          <h2 class="text-center mb-3 fw-bold" style="color: #ff385c;">
+            📝 Create Account
+          </h2>
+          <p class="text-center text-muted mb-4">
+            Sign up to start exploring amazing stays.
+          </p>
+
+          <form method="POST" action="/signup" novalidate class="needs-validation">
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="username" class="form-label fw-semibold">Username</label>
+              <input
+                name="username"
+                id="username"
+                placeholder="Enter your username"
+                type="text"
+                class="form-control form-control-lg rounded-3 shadow-sm"
+                required
+                autocomplete="username"
+              />
+              <div class="invalid-feedback">Please enter a valid username</div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label fw-semibold">Email</label>
+              <input
+                name="email"
+                id="email"
+                placeholder="Enter your email"
+                type="email"
+                class="form-control form-control-lg rounded-3 shadow-sm"
+                required
+                autocomplete="email"
+              />
+              <div class="invalid-feedback">Please enter a valid email</div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label fw-semibold">Password</label>
+              <input
+                name="password"
+                id="password"
+                placeholder="Enter your password"
+                type="password"
+                class="form-control form-control-lg rounded-3 shadow-sm"
+                required
+                autocomplete="new-password"
+              />
+              <div class="invalid-feedback">Please enter a password</div>
+            </div>
+
+            <!-- Submit -->
+            <div class="text-center mt-4">
+              <button
+                type="submit"
+                class="btn btn-lg px-5 py-2 text-white fw-semibold rounded-pill"
+                style="
+                  background: linear-gradient(90deg, #ff385c, #ff4d6d);
+                  border: none;
+                  transition: 0.3s;
+                "
+                onmouseover="this.style.opacity='0.85'"
+                onmouseout="this.style.opacity='1'"
+              >
+                📝 Sign Up
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center mt-4">
+            <p class="text-muted">
+              Already have an account?
+              <a href="/login" style="color: #ff385c; text-decoration: none; font-weight: 600;">Log in here</a>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
+
+<style>
+  body {
+    background-color: #fff9f9;
+  }
+
+  .card {
+    background-color: #ffffff;
+  }
+
+  label {
+    color: #444;
+  }
+
+  input::placeholder {
+    color: #aaa;
+    font-size: 0.95rem;
+  }
+</style>
+
+<script>
+  // Bootstrap form validation
+  (function () {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+</script>

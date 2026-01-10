@@ -1,7 +1,21 @@
 const Listing=require("../models/listing.js")
 
 module.exports.index= async(req, res) => {
-  const allListings = await Listing.find({});
+  let { search } = req.query;   // get search text from URL
+  let allListings;
+
+  if (search && search.trim() !== "") {
+    allListings = await Listing.find({
+      $or: [
+        { title: { $regex: search, $options: "i" } },
+        { location: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } }
+      ]
+    });
+  } else {
+    allListings = await Listing.find({});
+  }
+
   res.render("listings/index.ejs", { allListings });
 }
 

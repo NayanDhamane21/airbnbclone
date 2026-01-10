@@ -1,75 +1,146 @@
 <% layout("layouts/boilerplate") -%>
 
-  <body>
-    <div class="row">
-      <div class="col-8 offset-2">
-         </br> </br>
-    <h3>Create a New Listing</h3>
-    <form method="POST" action="/listings" enctype="multipart/form-data">
-      <div class="mb-3">
-         <label for="title" class="form-label">tittle</label>
-         <input name="listing[title]" placeholder="enter title" type="text"  class="form-control" required/>
-         <div class="invalid-feedback">invalid title</div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+          <h2 class="text-center mb-4 fw-bold" style="color: #ff385c;">
+            🏠 Create a New Listing
+          </h2>
+          <p class="text-center text-muted mb-4">
+            Fill in the details below to add your property to Wanderlust.
+          </p>
+
+          <form
+            method="POST"
+            action="/listings"
+            enctype="multipart/form-data"
+            novalidate
+            class="needs-validation"
+          >
+            <!-- Title -->
+            <div class="mb-3">
+              <label for="title" class="form-label fw-semibold">Title</label>
+              <input
+                name="listing[title]"
+                placeholder="Enter property title"
+                type="text"
+                class="form-control form-control-lg rounded-3"
+                required
+              />
+              <div class="invalid-feedback">Please enter a title</div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="description" class="form-label fw-semibold"
+                >Description</label
+              >
+              <textarea
+                name="listing[description]"
+                placeholder="Describe your listing..."
+                class="form-control rounded-3"
+                rows="4"
+                required
+              ></textarea>
+              <div class="invalid-feedback">Please enter a description</div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-3">
+              <label for="image" class="form-label fw-semibold"
+                >Upload Image</label
+              >
+              <input
+                name="listing[image]"
+                type="file"
+                class="form-control form-control-lg rounded-3"
+              />
+            </div>
+
+            <!-- Price + Country -->
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="price" class="form-label fw-semibold">Price</label>
+                <input
+                  name="listing[price]"
+                  placeholder="Enter price"
+                  class="form-control rounded-3"
+                  required
+                />
+                <div class="invalid-feedback">Please enter a valid price</div>
+              </div>
+
+              <div class="col-md-8 mb-3">
+                <label for="country" class="form-label fw-semibold"
+                  >Country</label
+                >
+                <input
+                  name="listing[country]"
+                  placeholder="Enter country"
+                  type="text"
+                  class="form-control rounded-3"
+                  required
+                />
+                <div class="invalid-feedback">Please enter a country</div>
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div class="mb-3">
+              <label for="location" class="form-label fw-semibold"
+                >Location</label
+              >
+              <input
+                name="listing[location]"
+                placeholder="Enter location"
+                type="text"
+                class="form-control rounded-3"
+                required
+              />
+              <div class="invalid-feedback">Please enter a location</div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center mt-4">
+              <button
+                class="btn btn-lg px-5 py-2 text-white fw-semibold"
+                style="
+                  background-color: #ff385c;
+                  border: none;
+                  border-radius: 50px;
+                  transition: 0.3s;
+                "
+                onmouseover="this.style.backgroundColor='#e02e50'"
+                onmouseout="this.style.backgroundColor='#ff385c'"
+              >
+                ➕ Add Listing
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-     <div class="mb-3">
-       <label for="description" class="form-label">description</label>
-         <textarea
-        name="listing[description]"
-        placeholder="enter description"
-         class="form-control"
-         required
-      ></textarea>
-      <div class="invalid-feedback">invalid description</div>
-     </div>
-     
-      
-      
-      
-      <div class="mb-3">
-        <label for="image" class="form-label">upload image</label>
-          <input
-        name="listing[image]"
-        type="file"
-        class="form-control"
-        
-      />
-      
-      </div>
-   
-      <div class="row ">
-        <div class="mb-3 col-md-4">
-        <label for="price" class="form-label">price</label>
-          <input name="listing[price]" placeholder="enter price" class="form-control"
-          required/>
-          <div class="invalid-feedback">invalid price</div>
-      </div>
-     
-      <div class="mb-3 col-md-8">
-        <label for="country" class="form-label">country</label>
-          <input name="listing[country]" placeholder="enter country" type="text" class="form-control" required/>
-          <div class="invalid-feedback">invalid country</div>
-      </div>
-      </div>
-    
-      
-     <div class="mb-3">
-       <label for="location" class="form-label">location</label>
-        <input
-        name="listing[location]"
-        placeholder="enter location"
-        type="text"
-        class="form-control"
-        required
-      />
-      <div class="invalid-feedback">invalid location</div>
-     </div>
-      
-     
-      <button class="btn btn-dark add-btn">Add</button>
-    </br> </br>
-      
-     
-    </form>
     </div>
-    </div>
-  </body>
+  </div>
+</div>
+
+<style>
+  body {
+    background-color: #fff9f9;
+  }
+
+  .card {
+    background-color: #ffffff;
+  }
+
+  label {
+    color: #444;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #aaa;
+    font-size: 0.95rem;
+  }
+</style>

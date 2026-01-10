@@ -1,132 +1,144 @@
 <% layout("layouts/boilerplate") %>
+
 <style>
-   #filters{
-    display:flex;
-    flex-wrap: wrap;
-    align-items: centre;
-   }
-   .filter{
-     text-align: center;
-     margin-right: 2rem;
-     margin-top: 2rem;
-     opacity:0.7
-   }
-   .filter:hover{
-    opacity:1;
-    cursor: pointer;
+  body {
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+  }
 
-   }
-   .tax-info{
-    display:none
-   }
-
-   .tax-toggle{
-    border:1px solid black;
-    border-radius: 1rem;
-    height:3.25rem;
-    padding:1rem;
-    margin-left: 2rem;
-    display:flex;
+  /* Header Section */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    margin: 2rem 2rem 1rem;
+  }
 
-   }
+  .page-header h3 {
+    font-weight: 600;
+  }
 
+  .btn-view-all {
+    background-color: #ff4d6d;
+    color: white;
+    font-weight: 500;
+    border-radius: 25px;
+    padding: 0.4rem 1rem;
+    border: none;
+  }
+
+  .btn-view-all:hover {
+    background-color: #ff2e57;
+  }
+
+  /* Cards */
+  .listing-card {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .listing-card:hover {
+    transform: scale(1.03);
+  }
+
+  .listing-img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+  }
+
+  .offer-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(90deg, #ff4d6d, #ff758c);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .fav-icon {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    color: #fff;
+    font-size: 1.2rem;
+    background: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    padding: 5px 7px;
+    cursor: pointer;
+  }
+
+  .fav-icon:hover {
+    background: rgba(255, 77, 109, 0.9);
+  }
+
+  .property-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .price {
+    color: #ff4d6d;
+    font-weight: 600;
+  }
+
+  .rating {
+    color: #ffc107;
+    font-size: 0.9rem;
+  }
 </style>
 
 
-
-<div id="filters">
-  <div class="filter">
-    <div><i class="fa-solid fa-fire"></i></div>
-    <div>Trending</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-bed"></i></div>
-    <div>Rooms</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-mountain-city"></i></div>
-    <div>Iconic cities</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-mountain"></i></div>
-    <div>Mountins</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-fort-awesome"></i></div>
-    <div>Castles</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-person-swimming"></i></div>
-    <div>Amazing Pools</div>
-  </div>
-   <div class="filter">
-    <div><i class="fa-solid fa-campground"></i></div>
-    <div>Camping</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-cow"></i></div>
-    <div>Farms</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-snowflake"></i></div>
-    <div>Arctic</div>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-igloo"></i></div>
-    <div>Domes</div>
-  </div>
-  <!-- <div class="filter">
-    <div><i class="fa-solid fa-ship"></i></div>
-    <div>boates</div>
-  </div> -->
-  <div class="tax-toggle mt-4">
-    <div class="form-check-reverse form-switch">
-    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-    <label class="form-check-label" for="flexSwitchCheckDefault">display total after taxes</label>
-  </div>
-  </div>
-
+<!-- Header -->
+<div class="page-header">
+  <h3>Popular Listings</h3>
+  <button class="btn-view-all">View All</button>
 </div>
-<br>
-  <h3>ALL Listing</h3>
 
-<div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 mt-3">
+<!-- Listings -->
+<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-1 g-4 px-4">
 
   <% for(let listing of allListings) { %>
-    <a href="/listings/<%=listing._id%>" class="listing-link">
-<div class="card col listing-card">
-  
-  <img src="<%= listing.image.url%>" class="card-img-top" alt="listing_image" style="height: 20rem;"/>
-  <div class="card-img-overlay"></div>
-  <div class="card-body">
-    <!-- <h5 class="card-title"><%= listing.title %></h5> -->
-    <p class="card-text"><b> <%= listing.title %></b>
-     <br>
-     &#8377; <%= listing.price.toLocaleString("en-IN") %>/night<i class="tax-info">&nbsp; &nbsp; +18% GST</i><br>
+  <div class="col">
+    <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
+      <div class="card listing-card">
+        <% if (listing.offer) { %>
+          <div class="offer-badge"><%= listing.offer %></div>
+        <% } %>
+        <i class="fa-solid fa-heart fav-icon"></i>
+        <img src="<%= listing.image.url %>" class="listing-img" alt="<%= listing.title %>">
+        <div class="property-badge"><%= listing.propertyType || 'Villa' %></div>
 
-    </p>
-    
-   
+        <div class="card-body">
+          <h6 class="fw-semibold text-truncate"><%= listing.title %></h6>
+          <p class="mb-1 price"><%= listing.price %> Rs / night</p>
+          <p class="mb-0 text-muted small">
+            <i class="fa-solid fa-location-dot me-1"></i><%= listing.country %>
+          </p>
+          <p class="mb-0 rating mt-1">
+            <i class="fa-solid fa-star"></i> 
+          </p>
+        </div>
+      </div>
+    </a>
   </div>
+  <% } %>
+
 </div>
-
-
-<% } %>
-</div>
-
-<script>
-    let taxswitch=document.getElementById("flexSwitchCheckDefault");
-    taxswitch.addEventListener("click",()=>{
-      let taxinfo=document.getElementsByClassName("tax-info");
-      for(info of taxinfo){
-        if(info.style.display!="inline"){
-         info.style.display="inline";
-
-        }else{
-          info.style.display="none";
-        }
-      }
-    })
-</script>
-    

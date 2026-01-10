@@ -44,7 +44,7 @@ main()                            // he purna database connect karasathi
   });
 
 async function main() {
-  await mongoose.connect(dburl);
+  await mongoose.connect(process.env.ATLASDB_URL);
 }
 
 app.set("view engine", "ejs");     // it is required for template 
@@ -54,19 +54,19 @@ app.use(methodOverride("_method"));   //override middle ware
 app.engine('ejs',ejsMate);    //boilerplate 
 app.use(express.static(path.join(__dirname,"/public")));  //styling 
 
-const store=MongoStore.create({
-  mongoUrl:dburl,
-  crypto:{
-    secret:process.env.SECRET
-  },
-  touchAfter:24*3600,
-});
+// const store=MongoStore.create({
+//   mongoUrl:dburl,
+//   crypto:{
+//     secret:process.env.SECRET
+//   },
+//   touchAfter:24*3600,
+// });
 
-store.on("error",()=>{
-  console.log("ERROR in MONGO SESSION STORE",err);
-});
+// store.on("error",()=>{
+//   console.log("ERROR in MONGO SESSION STORE",err);
+// });
 const sessionOptions={    
-  store,  
+  // store,  
   secret:process.env.SECRET,
   resave:false,
   saveUninitialized: true,
