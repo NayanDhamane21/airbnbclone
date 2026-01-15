@@ -1,5 +1,5 @@
 const Listing=require("../models/listing.js")
-
+const Booking = require("../models/booking");  
 module.exports.index= async(req, res) => {
   let { search } = req.query;   // get search text from URL
   let allListings;
@@ -26,18 +26,25 @@ module.exports.rendernewform=(req, res) => {
 
 module.exports.showlisting=async (req, res) => {
   let { id } = req.params;
-  const listing = await Listing.findById(id).populate({
-    path:"reviews",
-    populate:{
-      path:"author",
-    },
-  }).populate("owner");
+  
+  const listing = await Listing.findById(id)
+    .populate({
+      path:"reviews",
+      populate:{
+        path:"author",
+      },
+    })
+    .populate("owner");
+
   if(!listing){
     req.flash("error","listing does not exist");
     return res.redirect("/listings");
   }
-  console.log(listing);
-  res.render("listings/show.ejs", { listing });
+
+  // Get all bookings for this listing
+  const bookings = await Booking.find({ listing: id });
+
+  res.render("listings/show.ejs", { listing, bookings, currUser: req.user });
 }
 
 module.exports.createlisting=async (req, res) => {

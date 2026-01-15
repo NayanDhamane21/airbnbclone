@@ -56,10 +56,16 @@
           <div class="invalid-feedback">Please select a check-out date</div>
         </div>
 
-        <button type="submit" class="btn w-100 text-white fw-semibold mt-3"
-          style="background: linear-gradient(90deg, #ff385c, #ff4d6d); border-radius: 25px;">
-          Reserve
-        </button>
+        <p id="bookingStatus" class="text-danger fw-semibold text-center d-none">
+  Already booked for selected dates
+</p>
+
+<button id="reserveBtn" type="submit"
+  class="btn w-100 text-white fw-semibold mt-3"
+  style="background: linear-gradient(90deg, #ff385c, #ff4d6d); border-radius: 25px;">
+  Reserve
+</button>
+
       </form>
 
       <p class="text-center text-muted mt-2 mb-0" style="font-size: 0.9rem;">
@@ -156,7 +162,8 @@
 </style>
 
 <script>
-  // Bootstrap form validation
+  
+  // Bootstrap validation
   (function () {
     'use strict';
     const forms = document.querySelectorAll('.needs-validation');
@@ -170,4 +177,46 @@
       }, false);
     });
   })();
+
+  const bookings = JSON.parse('<%- JSON.stringify(bookings || []) %>');
+
+  const checkinInput = document.getElementById("checkin");
+  const checkoutInput = document.getElementById("checkout");
+  const reserveBtn = document.getElementById("reserveBtn");
+  const bookingStatus = document.getElementById("bookingStatus");
+
+  function hasConflict(checkin, checkout) {
+    const ci = new Date(checkin);
+    const co = new Date(checkout);
+
+    return bookings.some(b => {
+      const bs = new Date(b.checkin);
+      const be = new Date(b.checkout);
+      return ci < be && co > bs;
+    });
+  }
+
+  function validateBooking() {
+    if (!checkinInput.value || !checkoutInput.value) return;
+
+    if (hasConflict(checkinInput.value, checkoutInput.value)) {
+      reserveBtn.style.display = "none";
+      bookingStatus.classList.remove("d-none");
+    } else {
+      reserveBtn.style.display = "block";
+      bookingStatus.classList.add("d-none");
+    }
+  }
+
+  if (checkinInput && checkoutInput) {
+    checkinInput.addEventListener("change", validateBooking);
+    checkoutInput.addEventListener("change", validateBooking);
+  }
+
+
+
+
+
+  
+
 </script>

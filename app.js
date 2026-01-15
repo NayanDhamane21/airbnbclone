@@ -22,6 +22,8 @@ const ExpressError=require("./utils/ExpressError.js")
 const listingRouter=require("./routes/listing.js")
 const reviewsRouter=require("./routes/review.js")
 const userRouter=require("./routes/user.js")
+const bookingRoutes = require("./routes/bookings");
+
 
 const session = require('express-session')  
 const MongoStore = require('connect-mongo');
@@ -119,6 +121,8 @@ app.use("/listings",listingRouter);
 
 app.use("/listings/:id/reviews",reviewsRouter);
 app.use("/",userRouter);
+app.use("/", bookingRoutes);
+
 
 
 
@@ -136,6 +140,6 @@ app.use((err,req,res,next)=>{
 
 
 
-app.listen(8080, () => {
-  console.log("server is listening to port 8080");
+app.listen(3000, () => {
+  console.log("server is listening to port 3000");
 });
