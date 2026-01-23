@@ -130,7 +130,7 @@ app.use("/", bookingRoutes);
 
 
 app.all('/{*any}',(req,res,next)=>{
-    next(new ExpressError(404,"PAGE NOT FOUND"));
+    res.redirect("/listings");
 });
 
 
