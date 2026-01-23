@@ -118,6 +118,18 @@ module.exports.createPaymentOrder = async (req, res) => {
 ========================= */
 module.exports.verifyPayment = async (req, res) => {
   try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.error("❌ Empty req.body");
+      return res.status(400).json({
+        success: false,
+        error: "Empty request body",
+      });
+    }
+
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      throw new Error("Razorpay key secret missing");
+    }
+
     const {
       razorpay_order_id,
       razorpay_payment_id,
@@ -127,7 +139,7 @@ module.exports.verifyPayment = async (req, res) => {
     console.log("🔐 Payment payload:", req.body);
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).json({ success: false });
+      return res.status(400).json({ success: false, error: "Missing payment data" });
     }
 
     const booking = await Booking.findById(req.params.id).populate({
@@ -136,7 +148,7 @@ module.exports.verifyPayment = async (req, res) => {
     });
 
     if (!booking || booking.status !== "pending") {
-      return res.status(400).json({ success: false });
+      return res.status(400).json({ success: false, error: "Invalid booking" });
     }
 
     const body = `${razorpay_order_id}|${razorpay_payment_id}`;
@@ -148,49 +160,22 @@ module.exports.verifyPayment = async (req, res) => {
 
     if (expectedSignature !== razorpay_signature) {
       console.error("❌ Signature mismatch");
-      return res.status(400).json({ success: false });
+      return res.status(400).json({ success: false, error: "Signature mismatch" });
     }
 
     booking.status = "booked";
     await booking.save();
 
-    const days =
-      (booking.checkout - booking.checkin) / (1000 * 60 * 60 * 24);
-
-    const amount = days * booking.listing.price;
-
-    await Payment.create({
-      booking: booking._id,
-      user: booking.user,
-      orderId: razorpay_order_id,
-      paymentId: razorpay_payment_id,
-      amount,
-      status: "SUCCESS",
-    });
-
-    // 📧 Email (non-blocking safety)
-    if (booking.listing.owner?.email) {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      await transporter.sendMail({
-        to: booking.listing.owner.email,
-        subject: "New Paid Booking",
-        html: `<p>New booking for ${booking.listing.title}</p>`,
-      });
-    }
-
     res.json({ success: true });
   } catch (err) {
     console.error("🔥 verifyPayment error:", err);
-    res.status(500).json({ success: false });
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
   }
 };
+
 
 
     
