@@ -41,6 +41,9 @@
     "cookie-parser": "^1.4.7",
   
       
+    "crypto": "^1.0.1",
+  
+      
     "dotenv": "^16.5.0",
   
       
@@ -80,7 +83,10 @@
     "passport-local": "^1.0.0",
   
       
-    "passport-local-mongoose": "^8.0.0"
+    "passport-local-mongoose": "^8.0.0",
+  
+      
+    "razorpay": "^2.9.6"
   
     }
 }

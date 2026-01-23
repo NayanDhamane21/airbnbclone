@@ -51,6 +51,7 @@ async function main() {
 
 app.set("view engine", "ejs");     // it is required for template 
 app.set("views", path.join(__dirname, "views"));   // aapn kontahi template create kela tar to views chya folder madhech search honar 
+app.use(express.json());           
 app.use(express.urlencoded({ extended: true }));   
 app.use(methodOverride("_method"));   //override middle ware
 app.engine('ejs',ejsMate);    //boilerplate 
@@ -105,6 +106,7 @@ app.use((req,res,next)=>{
   next();
   
 })
+
 
 
 // app.get("/demouser",async(req,res)=>{
