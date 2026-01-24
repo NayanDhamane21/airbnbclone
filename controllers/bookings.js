@@ -179,21 +179,14 @@ module.exports.verifyPayment = async (req, res) => {
           status: "SUCCESS",
         });
 
-        if (booking.listing.owner?.email) {
-          await transporter.sendMail({
-            to: booking.listing.owner.email,
-            subject: "New Paid Booking",
-            html: `
-              <p>A new booking has been confirmed.</p>
-              <p><b>Listing:</b> ${booking.listing.title}</p>
-              <p><b>Amount:</b> ₹${booking.totalAmount}</p>
-            `,
-          });
-        }
+        
+        
       } catch (err) {
         console.error("🔥 Background task failed:", err);
       }
     });
+        
+
   } catch (err) {
     console.error("🔥 verifyPayment error:", err);
     res.status(500).json({ success: false });
