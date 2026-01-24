@@ -14,6 +14,17 @@ const razorpay = new Razorpay({
 });
 
 /* =========================
+   EMAIL TRANSPORTER (CREATE ONCE)
+========================= */
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+/* =========================
    CREATE BOOKING (PENDING)
 ========================= */
 module.exports.createBooking = async (req, res) => {
@@ -98,10 +109,15 @@ module.exports.createPaymentOrder = async (req, res) => {
     const amount = days * booking.listing.price;
 
     const order = await razorpay.orders.create({
-      amount: amount * 100,
+      amount: amount * 100, // in paise
       currency: "INR",
       receipt: `booking_${booking._id}`,
     });
+
+    // ✅ STORE ORDER ID & AMOUNT IN DB
+    booking.razorpayOrderId = order.id;
+    booking.totalAmount = amount;
+    await booking.save();
 
     res.json({
       id: order.id,
@@ -118,13 +134,9 @@ module.exports.createPaymentOrder = async (req, res) => {
 ========================= */
 module.exports.verifyPayment = async (req, res) => {
   try {
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-    } = req.body;
+    const { razorpay_payment_id, razorpay_signature } = req.body;
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    if (!razorpay_payment_id || !razorpay_signature) {
       return res.status(400).json({ success: false });
     }
 
@@ -137,61 +149,53 @@ module.exports.verifyPayment = async (req, res) => {
       return res.status(400).json({ success: false });
     }
 
-    const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+    // ✅ VERIFY USING STORED ORDER ID (IMPORTANT)
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(body)
+      .update(`${booking.razorpayOrderId}|${razorpay_payment_id}`)
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
+      console.error("❌ Razorpay signature mismatch");
       return res.status(400).json({ success: false });
     }
 
+    // ✅ MARK BOOKING AS CONFIRMED
     booking.status = "booked";
     await booking.save();
 
-    // 🚀 SEND RESPONSE IMMEDIATELY
+    // 🚀 RESPOND IMMEDIATELY
     res.json({ success: true });
 
-    // 🔁 BACKGROUND TASK (email + payment record)
+    // 🔁 BACKGROUND TASK (PAYMENT + EMAIL)
     setImmediate(async () => {
       try {
         await Payment.create({
           booking: booking._id,
           user: booking.user,
-          orderId: razorpay_order_id,
+          orderId: booking.razorpayOrderId,
           paymentId: razorpay_payment_id,
           amount: booking.totalAmount,
           status: "SUCCESS",
         });
 
         if (booking.listing.owner?.email) {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: process.env.EMAIL_USER,
-              pass: process.env.EMAIL_PASS,
-            },
-          });
-
           await transporter.sendMail({
             to: booking.listing.owner.email,
             subject: "New Paid Booking",
-            html: `<p>New booking for <b>${booking.listing.title}</b></p>`,
+            html: `
+              <p>A new booking has been confirmed.</p>
+              <p><b>Listing:</b> ${booking.listing.title}</p>
+              <p><b>Amount:</b> ₹${booking.totalAmount}</p>
+            `,
           });
         }
       } catch (err) {
         console.error("🔥 Background task failed:", err);
       }
     });
-
   } catch (err) {
     console.error("🔥 verifyPayment error:", err);
     res.status(500).json({ success: false });
   }
 };
-
-
-
-
-    
